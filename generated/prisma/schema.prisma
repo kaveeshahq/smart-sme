@@ -1,0 +1,195 @@
+datasource db {
+  provider = "sqlserver"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+// ─────────────────────────────────────────
+// MODULE 1 — AUTH & EMPLOYEES
+// ─────────────────────────────────────────
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  role      String    @default("EMPLOYEE") // ADMIN | MANAGER | EMPLOYEE
+  employee  Employee?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Employee {
+  id          Int          @id @default(autoincrement())
+  userId      Int          @unique
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName   String
+  lastName    String
+  phone       String?
+  address     String?
+  nic         String?      @unique
+  department  String?
+  position    String?
+  salary      Float        @default(0)
+  hiredAt     DateTime     @default(now())
+  isActive    Boolean      @default(true)
+  attendances Attendance[]
+  leaves      Leave[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Attendance {
+  id         Int       @id @default(autoincrement())
+  employeeId Int
+  employee   Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date       DateTime
+  checkIn    DateTime?
+  checkOut   DateTime?
+  status     String    @default("PRESENT") // PRESENT | ABSENT | LATE | HALF_DAY
+  note       String?
+  createdAt  DateTime  @default(now())
+}
+
+model Leave {
+  id         Int      @id @default(autoincrement())
+  employeeId Int
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  type       String // ANNUAL | SICK | CASUAL | MATERNITY | UNPAID
+  startDate  DateTime
+  endDate    DateTime
+  reason     String?
+  status     String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  approvedBy String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────
+// MODULE 2 — INVENTORY
+// ─────────────────────────────────────────
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+}
+
+model Supplier {
+  id          Int       @id @default(autoincrement())
+  name        String
+  contactName String?
+  email       String?
+  phone       String?
+  address     String?
+  city        String?
+  isActive    Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id             Int             @id @default(autoincrement())
+  name           String
+  sku            String          @unique
+  description    String?
+  categoryId     Int?
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  supplierId     Int?
+  supplier       Supplier?       @relation(fields: [supplierId], references: [id])
+  costPrice      Float           @default(0)
+  sellingPrice   Float           @default(0)
+  stockQty       Int             @default(0)
+  lowStockAlert  Int             @default(10)
+  unit           String          @default("pcs")
+  isActive       Boolean         @default(true)
+  stockMovements StockMovement[]
+  saleItems      SaleItem[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model StockMovement {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  type      String // IN | OUT | ADJUSTMENT | RETURN
+  quantity  Int
+  reference String?
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+// ─────────────────────────────────────────
+// MODULE 3 — CUSTOMERS
+// ─────────────────────────────────────────
+
+model Customer {
+  id         Int      @id @default(autoincrement())
+  firstName  String
+  lastName   String
+  email      String?  @unique
+  phone      String?
+  address    String?
+  city       String?
+  nic        String?
+  loyaltyPts Int      @default(0)
+  isActive   Boolean  @default(true)
+  sales      Sale[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────
+// MODULE 4 — SALES
+// ─────────────────────────────────────────
+
+model Sale {
+  id            Int        @id @default(autoincrement())
+  invoiceNo     String     @unique
+  customerId    Int?
+  customer      Customer?  @relation(fields: [customerId], references: [id])
+  items         SaleItem[]
+  subtotal      Float
+  discount      Float      @default(0)
+  tax           Float      @default(0)
+  total         Float
+  paymentMethod String     @default("CASH") // CASH | CARD | BANK_TRANSFER | CHEQUE
+  status        String     @default("COMPLETED") // PENDING | COMPLETED | CANCELLED | REFUNDED
+  note          String?
+  soldAt        DateTime   @default(now())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model SaleItem {
+  id        Int     @id @default(autoincrement())
+  saleId    Int
+  sale      Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Float
+  discount  Float   @default(0)
+  total     Float
+}
+
+// ─────────────────────────────────────────
+// MODULE 5 — FINANCE
+// ─────────────────────────────────────────
+
+model Expense {
+  id          Int      @id @default(autoincrement())
+  title       String
+  amount      Float
+  category    String   @default("OTHER") // RENT | UTILITIES | SALARIES | MARKETING | SUPPLIES | TRANSPORT | MAINTENANCE | OTHER
+  description String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
