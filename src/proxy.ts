@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
 
-const PUBLIC_ROUTES = ["/login", "/api/auth/login", "/api/auth/logout"];
+// These routes are fully public
+const PUBLIC_ROUTES = [
+  "/",
+  "/login",
+  "/api/auth/login",
+  "/api/auth/logout",
+];
 
 const ROLE_ROUTES: Record<string, string[]> = {
   "/employees": ["ADMIN", "MANAGER"],
@@ -15,10 +21,12 @@ const ROLE_ROUTES: Record<string, string[]> = {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
+  // Allow public routes
+  if (PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
     return NextResponse.next();
   }
 
+  // Allow static files
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
@@ -44,7 +52,7 @@ export async function proxy(request: NextRequest) {
   for (const [route, allowedRoles] of Object.entries(ROLE_ROUTES)) {
     if (pathname.startsWith(route)) {
       if (!allowedRoles.includes(payload.role)) {
-        return NextResponse.redirect(new URL("/", request.url));
+        return NextResponse.redirect(new URL("/dashboard", request.url));
       }
     }
   }
