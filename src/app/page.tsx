@@ -2,201 +2,226 @@ import Link from "next/link";
 import {
   BarChart3, Package, Users, ShoppingCart,
   DollarSign, Shield, Zap, Globe, ArrowRight,
-  CheckCircle, TrendingUp, UserCircle,
+  CheckCircle, TrendingUp, UserCircle, LayoutDashboard,
+  ChevronRight, Star,
 } from "lucide-react";
+import { getSession } from "@/lib/auth";
+import HomeNavbar from "@/components/layout/HomeNavbar";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await getSession();
+
   return (
     <div className="min-h-screen bg-white">
 
       {/* ── NAVBAR ── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <BarChart3 size={18} className="text-white" />
-            </div>
-            <span className="font-bold text-gray-900 text-lg">Smart SME</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="text-sm text-gray-600 hover:text-gray-900 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/login"
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
-            >
-              Get Started
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <HomeNavbar session={session} />
 
       {/* ── HERO ── */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 relative overflow-hidden">
-        {/* Animated blobs */}
+      <section className="pt-28 pb-24 px-6 bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-20 animate-pulse" />
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-indigo-400 rounded-full blur-3xl opacity-20 animate-pulse delay-1000" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-violet-500 rounded-full blur-3xl opacity-10 animate-pulse delay-500" />
+          <div className="absolute top-10 left-10 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-20 animate-pulse" />
+          <div className="absolute bottom-10 right-10 w-80 h-80 bg-indigo-400 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: "1s" }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-violet-500 rounded-full blur-3xl opacity-10 animate-pulse" style={{ animationDelay: "0.5s" }} />
+          <div
+            className="absolute inset-0 opacity-5"
+            style={{
+              backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
         </div>
 
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-blue-800/50 border border-blue-700 text-blue-200 text-xs font-medium px-4 py-1.5 rounded-full mb-8">
-            <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-            Built for Sri Lankan SMEs 🇱🇰
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-blue-800/50 border border-blue-700/50 text-blue-200 text-xs font-medium px-4 py-2 rounded-full mb-8 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+              Designed for Sri Lankan SMEs 🇱🇰
+              <ChevronRight size={12} />
+            </div>
+
+            <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight mb-6">
+              Run Your Business
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-violet-300 to-indigo-300">
+                Smarter & Faster
+              </span>
+            </h1>
+
+            <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+              One centralized platform to manage inventory, sales, customers,
+              employees and finances. Replace Excel sheets and paper records forever.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              {session ? (
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 bg-white text-blue-900 font-bold px-8 py-4 rounded-2xl hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl text-sm group"
+                >
+                  Go to Dashboard
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-2 bg-white text-blue-900 font-bold px-8 py-4 rounded-2xl hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl text-sm group"
+                >
+                  Start Managing Now
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              )}
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 border border-blue-400/50 text-blue-100 font-medium px-8 py-4 rounded-2xl hover:bg-blue-800/50 transition-colors text-sm backdrop-blur-sm"
+              >
+                <LayoutDashboard size={16} />
+                View Live Dashboard
+              </Link>
+            </div>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-6">
-            Run Your Business
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-violet-300">
-              Smarter & Faster
-            </span>
-          </h1>
-
-          <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            One platform to manage your inventory, sales, customers, employees, and finances.
-            Replace Excel sheets and paper records forever.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/login"
-              className="flex items-center gap-2 bg-white text-blue-900 font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-50 transition-colors shadow-lg text-sm"
-            >
-              Start Managing Now
-              <ArrowRight size={16} />
-            </Link>
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-2 border border-blue-400 text-blue-100 font-medium px-8 py-3.5 rounded-xl hover:bg-blue-800/50 transition-colors text-sm"
-            >
-              View Dashboard Demo
-            </Link>
-          </div>
-
-          {/* Stats row */}
-          <div className="grid grid-cols-3 gap-6 mt-16 max-w-lg mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
-              { value: "6+", label: "Modules" },
-              { value: "100%", label: "Cloud Based" },
+              { value: "6+", label: "Core Modules" },
               { value: "LKR", label: "Local Currency" },
+              { value: "3", label: "Access Roles" },
+              { value: "100%", label: "Cloud Based" },
             ].map((s) => (
-              <div key={s.label} className="text-center">
+              <div key={s.label} className="text-center bg-blue-800/30 backdrop-blur-sm border border-blue-700/30 rounded-2xl py-4 px-3">
                 <p className="text-3xl font-bold text-white">{s.value}</p>
-                <p className="text-blue-300 text-xs mt-1">{s.label}</p>
+                <p className="text-blue-300 text-xs mt-1 font-medium">{s.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── MODULES GRID ── */}
-      <section className="py-20 px-6 bg-gray-50">
+      {/* ── QUICK ACCESS TILES ── */}
+      <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
-              Everything Your Business Needs
+              Everything in One Place
             </h2>
             <p className="text-gray-500 max-w-xl mx-auto">
-              Six powerful modules working together to streamline every aspect of your operations.
+              Jump directly into any module or explore the full dashboard
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Link href="/dashboard" className="block mb-4 group">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 flex items-center justify-between hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                  <LayoutDashboard size={24} className="text-white" />
+                </div>
+                <div>
+                  <p className="text-white font-bold text-lg">Main Dashboard</p>
+                  <p className="text-blue-200 text-sm">Revenue, sales overview, recent activity and key metrics</p>
+                </div>
+              </div>
+              <ArrowRight size={20} className="text-white group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               {
-                icon: <Package size={28} />,
-                color: "bg-orange-500",
+                icon: <Package size={24} />,
+                label: "Inventory",
+                href: "/inventory",
+                desc: "Products, stock levels, suppliers",
                 light: "bg-orange-50",
-                title: "Inventory Management",
-                desc: "Track stock levels in real-time, get low stock alerts, manage suppliers, and record every stock movement automatically.",
-                features: ["Product catalog", "Stock in/out tracking", "Low stock alerts", "Supplier management"],
+                border: "border-orange-100",
+                iconBg: "bg-orange-500",
+                features: ["Product catalog", "Stock tracking", "Low stock alerts"],
               },
               {
-                icon: <ShoppingCart size={28} />,
-                color: "bg-blue-500",
+                icon: <ShoppingCart size={24} />,
+                label: "Sales",
+                href: "/sales",
+                desc: "Transactions, invoices, POS",
                 light: "bg-blue-50",
-                title: "Sales Management",
-                desc: "Create sales transactions, generate professional invoices, and track daily, monthly, and yearly performance.",
-                features: ["POS system", "Invoice generation", "Sales history", "Payment tracking"],
+                border: "border-blue-100",
+                iconBg: "bg-blue-500",
+                features: ["New sale / POS", "Invoice history", "Payment tracking"],
               },
               {
-                icon: <Users size={28} />,
-                color: "bg-emerald-500",
+                icon: <Users size={24} />,
+                label: "Customers",
+                href: "/customers",
+                desc: "Profiles, history, loyalty points",
                 light: "bg-emerald-50",
-                title: "Customer Management",
-                desc: "Build customer profiles, track purchase history, manage loyalty points, and search your customer base instantly.",
-                features: ["Customer profiles", "Purchase history", "Loyalty points", "Smart search"],
+                border: "border-emerald-100",
+                iconBg: "bg-emerald-500",
+                features: ["Customer profiles", "Purchase history", "Loyalty points"],
               },
               {
-                icon: <UserCircle size={28} />,
-                color: "bg-violet-500",
+                icon: <UserCircle size={24} />,
+                label: "Employees",
+                href: "/employees",
+                desc: "Staff, attendance, leave",
                 light: "bg-violet-50",
-                title: "Employee Management",
-                desc: "Manage employee records, track attendance, handle leave requests, and control system access by role.",
-                features: ["Employee records", "Attendance tracking", "Leave management", "Role-based access"],
+                border: "border-violet-100",
+                iconBg: "bg-violet-500",
+                features: ["Employee records", "Attendance", "Leave management"],
               },
               {
-                icon: <DollarSign size={28} />,
-                color: "bg-teal-500",
+                icon: <DollarSign size={24} />,
+                label: "Finance",
+                href: "/finance",
+                desc: "Revenue, expenses, profit & loss",
                 light: "bg-teal-50",
-                title: "Financial Dashboard",
-                desc: "Monitor revenue, track expenses by category, view profit & loss at a glance, and make data-driven decisions.",
-                features: ["Revenue tracking", "Expense management", "Profit & loss", "Monthly reports"],
+                border: "border-teal-100",
+                iconBg: "bg-teal-500",
+                features: ["Expense tracking", "P&L overview", "Monthly reports"],
               },
               {
-                icon: <BarChart3 size={28} />,
-                color: "bg-rose-500",
+                icon: <BarChart3 size={24} />,
+                label: "Analytics",
+                href: "/analytics",
+                desc: "Trends, insights, performance",
                 light: "bg-rose-50",
-                title: "Analytics Dashboard",
-                desc: "Visualize business trends, identify best-selling products, monitor customer growth, and forecast performance.",
-                features: ["Sales trends", "Best sellers", "Customer growth", "Inventory insights"],
+                border: "border-rose-100",
+                iconBg: "bg-rose-500",
+                features: ["Sales trends", "Best sellers", "Customer growth"],
               },
             ].map((module) => (
-              <div
-                key={module.title}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group"
+              <Link
+                key={module.label}
+                href={module.href}
+                className={`group block ${module.light} border ${module.border} rounded-2xl p-5 hover:shadow-md transition-all`}
               >
-                <div className={`${module.light} w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform`}>
-                  <span className={`${module.color} bg-clip-text`} style={{ color: "inherit" }}>
-                    <div className={`${module.color} text-white p-2 rounded-lg`}>
-                      {module.icon}
-                    </div>
-                  </span>
+                <div className="flex items-start justify-between mb-3">
+                  <div className={`${module.iconBg} text-white w-11 h-11 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
+                    {module.icon}
+                  </div>
+                  <ChevronRight size={16} className="text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all mt-1" />
                 </div>
-                <h3 className="font-semibold text-gray-800 mb-2">{module.title}</h3>
-                <p className="text-gray-500 text-sm mb-4 leading-relaxed">{module.desc}</p>
+                <h3 className="font-bold text-gray-800 text-base mb-1">{module.label}</h3>
+                <p className="text-gray-500 text-xs mb-3">{module.desc}</p>
                 <ul className="space-y-1">
                   {module.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-xs text-gray-500">
-                      <CheckCircle size={12} className="text-green-500 shrink-0" />
+                    <li key={f} className="flex items-center gap-1.5 text-xs text-gray-500">
+                      <CheckCircle size={10} className="text-green-500 shrink-0" />
                       {f}
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── WHY US ── */}
+      {/* ── WHY SMART SME ── */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
-              Why Smart SME?
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Why Smart SME?</h2>
             <p className="text-gray-500 max-w-xl mx-auto">
-              Designed specifically for small and medium enterprises in Sri Lanka.
+              Built specifically for Sri Lankan small and medium enterprises
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
@@ -204,34 +229,31 @@ export default function HomePage() {
                 color: "text-yellow-500",
                 bg: "bg-yellow-50",
                 title: "Fast & Lightweight",
-                desc: "Built with Next.js for blazing fast performance on any device.",
+                desc: "Built with Next.js 16 for blazing fast performance on any device.",
               },
               {
                 icon: <Shield size={24} />,
                 color: "text-blue-500",
                 bg: "bg-blue-50",
                 title: "Secure by Default",
-                desc: "JWT authentication with role-based access control keeps your data safe.",
+                desc: "JWT auth with role-based access — Admin, Manager, Employee.",
               },
               {
                 icon: <Globe size={24} />,
                 color: "text-emerald-500",
                 bg: "bg-emerald-50",
                 title: "Cloud Based",
-                desc: "Access your business data from anywhere, anytime, on any device.",
+                desc: "Access your business data from anywhere, anytime.",
               },
               {
                 icon: <TrendingUp size={24} />,
                 color: "text-violet-500",
                 bg: "bg-violet-50",
                 title: "Real-time Insights",
-                desc: "Make smart decisions with live dashboards and business analytics.",
+                desc: "Live dashboards and analytics to drive smart decisions.",
               },
             ].map((item) => (
-              <div
-                key={item.title}
-                className="text-center p-6 rounded-2xl border border-gray-100 hover:shadow-sm transition-shadow"
-              >
+              <div key={item.title} className="text-center p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
                 <div className={`${item.bg} w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4`}>
                   <span className={item.color}>{item.icon}</span>
                 </div>
@@ -243,30 +265,137 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── ROLE ACCESS ── */}
+      <section className="py-20 px-6 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Role-Based Access Control</h2>
+            <p className="text-gray-500">Every user sees exactly what they need</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                role: "Admin", icon: "👑",
+                bg: "bg-yellow-50", border: "border-yellow-200",
+                badge: "bg-yellow-100 text-yellow-800",
+                access: ["Full system access", "Manage all employees", "View all reports", "Finance & expenses", "Analytics dashboard", "System settings"],
+              },
+              {
+                role: "Manager", icon: "🎯",
+                bg: "bg-blue-50", border: "border-blue-200",
+                badge: "bg-blue-100 text-blue-800",
+                access: ["Inventory management", "Sales & invoices", "Customer management", "Employee oversight", "Finance reports", "Analytics view"],
+              },
+              {
+                role: "Employee", icon: "👤",
+                bg: "bg-emerald-50", border: "border-emerald-200",
+                badge: "bg-emerald-100 text-emerald-800",
+                access: ["View inventory", "Create sales", "View customers", "Own attendance", "Leave requests", "Dashboard view"],
+              },
+            ].map((r) => (
+              <div key={r.role} className={`${r.bg} border ${r.border} rounded-2xl p-6`}>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">{r.icon}</span>
+                  <span className={`${r.badge} text-sm font-bold px-3 py-1 rounded-full`}>{r.role}</span>
+                </div>
+                <ul className="space-y-2">
+                  {r.access.map((a) => (
+                    <li key={a} className="flex items-center gap-2 text-sm text-gray-600">
+                      <CheckCircle size={13} className="text-green-500 shrink-0" />
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIAL ── */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="flex justify-center gap-1 mb-4">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} size={20} className="text-yellow-400 fill-yellow-400" />
+            ))}
+          </div>
+          <blockquote className="text-xl text-gray-700 font-medium italic mb-6">
+            &ldquo;Smart SME replaced all our Excel sheets and manual records.
+            Now we can see our entire business at a glance.&rdquo;
+          </blockquote>
+          <p className="text-gray-500 text-sm">— Kavindu Perera, Business Owner · Colombo 🇱🇰</p>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
-      <section className="py-20 px-6 bg-gradient-to-br from-blue-950 to-indigo-900">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Transform Your Business?
-          </h2>
+      <section className="py-20 px-6 bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-900 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-10 right-10 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-20" />
+          <div className="absolute bottom-10 left-10 w-64 h-64 bg-indigo-400 rounded-full blur-3xl opacity-20" />
+        </div>
+        <div className="max-w-3xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl font-bold text-white mb-4">Ready to Transform Your Business?</h2>
           <p className="text-blue-200 mb-8 text-lg">
-            Join hundreds of Sri Lankan SMEs already using Smart SME to run smarter operations.
+            Join smart Sri Lankan SMEs already running on Smart SME.
           </p>
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 bg-white text-blue-900 font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
-          >
-            Get Started Free
-            <ArrowRight size={16} />
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {session ? (
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center justify-center gap-2 bg-white text-blue-900 font-bold px-8 py-4 rounded-2xl hover:bg-blue-50 transition-all shadow-xl group"
+              >
+                Go to Dashboard
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center gap-2 bg-white text-blue-900 font-bold px-8 py-4 rounded-2xl hover:bg-blue-50 transition-all shadow-xl group"
+              >
+                Get Started Free
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+            )}
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center gap-2 border border-blue-400/50 text-blue-100 font-medium px-8 py-4 rounded-2xl hover:bg-blue-800/50 transition-colors"
+            >
+              <LayoutDashboard size={16} />
+              Explore Dashboard
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="py-8 px-6 bg-gray-900 text-center">
-        <p className="text-gray-400 text-sm">
-          © 2026 Smart SME Management System · Built for Sri Lanka 🇱🇰
-        </p>
+      <footer className="py-10 px-6 bg-gray-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <BarChart3 size={16} className="text-white" />
+              </div>
+              <span className="font-bold text-white">Smart SME</span>
+              <span className="text-gray-500 text-sm">· Management System</span>
+            </div>
+            <div className="flex gap-6">
+              {[
+                { label: "Dashboard", href: "/dashboard" },
+                { label: "Inventory", href: "/inventory" },
+                { label: "Sales", href: "/sales" },
+                { label: "Finance", href: "/finance" },
+                { label: "Analytics", href: "/analytics" },
+              ].map((link) => (
+                <Link key={link.label} href={link.href}
+                  className="text-gray-400 hover:text-white text-sm transition-colors">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+            <p className="text-gray-500 text-sm">© 2026 Smart SME · Sri Lanka 🇱🇰</p>
+          </div>
+        </div>
       </footer>
     </div>
   );

@@ -4,9 +4,8 @@ import { format } from "date-fns";
 
 export async function GET() {
   try {
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
-    sixMonthsAgo.setDate(1);
+    const now = new Date();
+    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
 
     const sales = await prisma.sale.findMany({
       where: { soldAt: { gte: sixMonthsAgo }, status: "COMPLETED" },
@@ -15,12 +14,9 @@ export async function GET() {
     });
 
     const monthlyMap: Record<string, number> = {};
-
     for (let i = 5; i >= 0; i--) {
-      const d = new Date();
-      d.setMonth(d.getMonth() - i);
-      const key = format(d, "MMM yyyy");
-      monthlyMap[key] = 0;
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      monthlyMap[format(d, "MMM yyyy")] = 0;
     }
 
     for (const sale of sales) {
@@ -37,6 +33,9 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data });
   } catch (error) {
-    return NextResponse.json({ success: false, error: "Failed" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed" },
+      { status: 500 }
+    );
   }
 }
