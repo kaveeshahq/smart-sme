@@ -13,6 +13,7 @@ import {
   ArrowDownRight,
 } from "lucide-react";
 import DashboardCharts from "@/components/charts/DashboardCharts";
+import AIInsights from "@/components/dashboard/AIInsights";
 
 async function getDashboardStats() {
   const now = new Date();
@@ -146,13 +147,15 @@ export default async function RootPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-100">
+        <h1 className="text-2xl font-bold text-black">
           Welcome back, {session?.name?.split(" ")[0]} 👋
         </h1>
-        <p className="text-gray-200 text-sm mt-1">
+        <p className="text-black text-sm mt-1">
           Here&apos;s what&apos;s happening with your business today.
         </p>
       </div>
+
+<AIInsights />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {statCards.map((card) => (
