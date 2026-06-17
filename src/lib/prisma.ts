@@ -38,6 +38,8 @@ function createPrismaClient() {
   }
 
   const config = parseConnectionString(connectionUrl);
+console.log("Parsed Prisma config:", config);
+  
 
   const adapter = new PrismaMssql({
     server: config.server,
